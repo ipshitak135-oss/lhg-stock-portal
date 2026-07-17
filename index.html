@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LHG Stock Portal</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        ✈️ LHG STOCK PORTAL
+    </div>
+
+    <div class="subtitle">
+        Lufthansa Inventory Management System
+    </div>
+
+</header>
+
+<div class="container">
+
+    <div class="searchBox">
+
+        <input
+            type="text"
+            id="searchBox"
+            placeholder="Search Item Name..."
+        >
+
+        <button id="searchBtn">
+            Search
+        </button>
+
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Total Items</h3>
+            <p id="totalItems">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Results</h3>
+            <p id="resultCount">0</p>
+        </div>
+
+    </div>
+
+    <h2>Browse Cupboards</h2>
+
+    <div id="cupboardContainer"></div>
+
+    <h2>Inventory Results</h2>
+
+    <table id="resultsTable">
+
+        <thead>
+
+            <tr>
+
+                <th>S.No</th>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Article</th>
+                <th>Last Ordered</th>
+                <th>Local / Order</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="resultsBody">
+
+        </tbody>
+
+    </table>
+
+    <br><br>
+
+    <button id="adminBtn">
+        Admin Login
+    </button>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
