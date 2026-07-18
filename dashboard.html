@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LHG Admin Dashboard</title>
+
+<link rel="stylesheet" href="admin.css">
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<h1>LHG Admin Dashboard</h1>
+
+<p>Inventory Management</p>
+
+<button id="openSheet">
+📊 Open Master Inventory
+</button>
+
+<br><br>
+
+<button id="logout">
+🚪 Logout
+</button>
+
+</div>
+
+<script>
+
+if(sessionStorage.getItem("lhgAdmin")!=="true"){
+    window.location.href="admin.html";
+}
+
+document.getElementById("logout").onclick=function(){
+
+    sessionStorage.removeItem("lhgAdmin");
+
+    window.location.href="index.html";
+
+};
+
+document.getElementById("openSheet").onclick=function(){
+
+    alert("Google Sheet Link yahan add karenge.");
+
+};
+
+</script>
+
+</body>
+</html>
