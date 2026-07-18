@@ -10,16 +10,12 @@ let inventory = [];
 
 async function loadInventory() {
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL + "?t=" + new Date().getTime());
         const data = await response.json();
 
-        inventory = data.filter(row => row && row.length > 0);
+        // Header row remove
+        inventory = data.slice(1);
 
-        totalItems.textContent = inventory.length;
-    } catch (err) {
-        console.error(err);
-    }
-}
 
 function searchInventory() {
 
