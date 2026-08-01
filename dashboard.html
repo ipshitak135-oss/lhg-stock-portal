@@ -22,21 +22,13 @@
 
 <div class="action-bar">
 
-<button id="addItemBtn">
-➕ Add Item
-</button>
+<button id="addItemBtn">➕ Add Item</button>
 
-<button id="uploadExcelBtn">
-📤 Upload Excel
-</button>
+<button id="uploadExcelBtn">📤 Upload Excel</button>
 
-<button id="exportExcelBtn">
-📥 Export Excel
-</button>
+<button id="exportExcelBtn">📥 Export Excel</button>
 
-<button id="logout">
-🚪 Logout
-</button>
+<button id="logout">🚪 Logout</button>
 
 </div>
 
@@ -61,12 +53,15 @@ placeholder="Shelf No"
 >
 
 <button id="saveItem">
+
 💾 Save Item
+
 </button>
 
 </div>
 
 <h2>Inventory List</h2>
+
 <div class="search-section">
 
 <input
@@ -76,7 +71,9 @@ placeholder="Search Item..."
 >
 
 <button id="searchItem">
+
 🔍 Search
+
 </button>
 
 </div>
@@ -101,32 +98,6 @@ placeholder="Search Item..."
 
 <tbody id="adminTableBody">
 
-<tr>
-
-<td>Mouse</td>
-
-<td>C-01</td>
-
-<td>S-2</td>
-
-<td>
-
-<button class="editBtn">
-
-✏ Edit
-
-</button>
-
-<button class="deleteBtn">
-
-🗑 Delete
-
-</button>
-
-</td>
-
-</tr>
-
 </tbody>
 
 </table>
@@ -143,11 +114,12 @@ hidden
 <script>
 
 if(sessionStorage.getItem("lhgAdmin")!=="true"){
-    window.location.href="admin.html";
+
+window.location.href="admin.html";
+
 }
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxU4eAP4vpmtl7bkO_7t-LcUexB4j-lWL_owh_Q3nGASolq76BsMPW1Tfts8-ASK7EB/exec";
-
+const API_URL="https://script.google.com/macros/s/AKfycbxU4eAP4vpmtl7bkO_7t-LcUexB4j-lWL_owh_Q3nGASolq76BsMPW1Tfts8-ASK7EB/exec";
 
 const saveBtn=document.getElementById("saveItem");
 const searchBtn=document.getElementById("searchItem");
@@ -164,146 +136,165 @@ let inventory=[];
 
 async function loadInventory(){
 
-    const res=await fetch(API_URL);
+try{
 
-    inventory=await res.json();
+const res=await fetch(API_URL);
 
-    renderTable(inventory);
+inventory=await res.json();
+
+renderTable(inventory);
+
+}catch(err){
+
+console.error(err);
+
+alert("Inventory Load Failed");
 
 }
 
+}
 function renderTable(data){
 
-    table.innerHTML="";
+table.innerHTML="";
 
-    data.forEach((row,index)=>{
+data.forEach((row,index)=>{
 
-        table.innerHTML+=`
+table.innerHTML+=`
 
-        <tr>
+<tr>
 
-        <td>${row[0]}</td>
+<td>${row[0]}</td>
 
-        <td>${row[1]}</td>
+<td>${row[1]}</td>
 
-        <td>${row[2]}</td>
+<td>${row[2]}</td>
 
-        <td>
+<td>
 
-        <button class="editBtn" onclick="editItem(${index})">
+<button class="editBtn" onclick="editItem(${index})">
 
-        ✏
+✏ Edit
 
-        </button>
+</button>
 
-        <button class="deleteBtn" onclick="deleteItem(${index})">
+<button class="deleteBtn" onclick="deleteItem(${index})">
 
-        🗑
+🗑 Delete
 
-        </button>
+</button>
 
-        </td>
+</td>
 
-        </tr>
+</tr>
 
-        `;
+`;
 
-    });
+});
 
 }
 
-saveBtn.onclick = async function () {
+saveBtn.onclick=async function(){
 
-    if (
-        item.value.trim() === "" ||
-        cupboard.value.trim() === "" ||
-        shelf.value.trim() === ""
-    ) {
-        alert("Please fill all fields.");
-        return;
-    }
+if(item.value.trim()==""||cupboard.value.trim()==""||shelf.value.trim()==""){
 
-    const body = {
-        action: "add",
-        item: item.value.trim(),
-        cupboard: cupboard.value.trim(),
-        shelf: shelf.value.trim()
-    };
+alert("Please fill all fields.");
 
-    try {
+return;
 
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-        });
-
-        const result = await response.json();
-
-        if (result.status === "success") {
-
-            alert("✅ Item Added Successfully");
-
-            item.value = "";
-            cupboard.value = "";
-            shelf.value = "";
-
-            loadInventory();
-
-        } else {
-
-            alert("Failed to save item.");
-
-        }
-
-    }  catch (err) {
-    console.log(err);
-    alert(err.message);
 }
 
-    }
+const body={
+
+action:"add",
+
+item:item.value.trim(),
+
+cupboard:cupboard.value.trim(),
+
+shelf:shelf.value.trim()
+
+};
+
+try{
+
+const response=await fetch(API_URL,{
+
+method:"POST",
+
+body:JSON.stringify(body)
+
+});
+
+const result=await response.json();
+
+if(result.status==="success"){
+
+alert("✅ Item Added Successfully");
+
+item.value="";
+
+cupboard.value="";
+
+shelf.value="";
+
+await loadInventory();
+
+}else{
+
+alert("Failed to save item.");
+
+}
+
+}catch(err){
+
+console.error(err);
+
+alert(err.message);
+
+}
 
 };
 
 searchBtn.onclick=function(){
 
-    const key=document.getElementById("adminSearch").value.toLowerCase();
+const key=document.getElementById("adminSearch").value.trim().toLowerCase();
 
-    const filtered=inventory.filter(x=>x[0].toLowerCase().includes(key));
+const filtered=inventory.filter(row=>
 
-    renderTable(filtered);
+(row[0]||"").toLowerCase().includes(key)
 
-}
+);
+
+renderTable(filtered);
+
+};
 
 function editItem(i){
 
-    item.value=inventory[i][0];
+item.value=inventory[i][0];
 
-    cupboard.value=inventory[i][1];
+cupboard.value=inventory[i][1];
 
-    shelf.value=inventory[i][2];
+shelf.value=inventory[i][2];
 
 }
-
 function deleteItem(i){
 
-    alert("Delete Function Next Step");
+alert("Delete Function Next Step");
 
 }
 
 uploadBtn.onclick=function(){
 
-    document.getElementById("excelFile").click();
+document.getElementById("excelFile").click();
 
-}
+};
 
 exportBtn.onclick=function(){
 
-    alert("Export Function Next Step");
+alert("Export Function Next Step");
 
-}
+};
 
 document.getElementById("logout").onclick=function(){
 
@@ -311,10 +302,9 @@ sessionStorage.removeItem("lhgAdmin");
 
 window.location.href="index.html";
 
-}
+};
 
 loadInventory();
-
 
 </script>
 
