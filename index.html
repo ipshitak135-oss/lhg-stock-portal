@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>LHG Stock Portal</title>
+<title>LHG Storage Locator</title>
 
 <link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 </head>
 
@@ -14,19 +20,36 @@
 
 <header>
 
-    <div class="logo">
-        ✈️ LHG STOCK PORTAL
-    </div>
+<div class="topBar">
 
-    <div class="subtitle">
-        Lufthansa Inventory Management System
-    </div>
+<div class="logoSection">
+
+<div class="logoIcon">
+✈️
+</div>
+
+<div>
+
+<h1>LHG Storage Locator</h1>
+
+<p>Find Every Item Within Seconds</p>
+
+</div>
+
+</div>
+
+<button id="adminBtn">
+Admin Login
+</button>
+
+</div>
 
 </header>
+<<div class="container">
 
-<div class="container">
+    <!-- Search -->
 
-    <div class="searchBox">
+    <div class="searchSection">
 
         <input
             type="text"
@@ -35,12 +58,14 @@
         >
 
         <button id="searchBtn">
-            Search
+            🔍 Search
         </button>
 
     </div>
 
-    <div class="cards">
+    <!-- Dashboard -->
+
+    <div class="dashboard">
 
         <div class="card">
             <h3>Total Items</h3>
@@ -48,17 +73,55 @@
         </div>
 
         <div class="card">
-            <h3>Results</h3>
+            <h3>Cupboards</h3>
+            <p>25</p>
+        </div>
+
+        <div class="card">
+            <h3>Search Results</h3>
             <p id="resultCount">0</p>
         </div>
 
     </div>
 
+    <!-- Cupboards -->
+
     <h2>Browse Cupboards</h2>
 
-    <div id="cupboardContainer"></div>
+    <div id="cupboardContainer" class="cupboardGrid">
 
-    <h2>Inventory Results</h2>
+    </div>
+
+    <!-- Search Result Card -->
+
+    <div id="searchResultCard" class="resultCard" style="display:none;">
+
+        <h2>Item Found</h2>
+
+        <div class="resultInfo">
+
+            <div>
+                <label>Item Name</label>
+                <span id="cardItem"></span>
+            </div>
+
+            <div>
+                <label>Cupboard</label>
+                <span id="cardCupboard"></span>
+            </div>
+
+            <div>
+                <label>Shelf</label>
+                <span id="cardShelf"></span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Table -->
+
+    <h2>Storage Details</h2>
 
     <table id="resultsTable">
 
@@ -66,12 +129,11 @@
 
             <tr>
 
-                <th>S.No</th>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Article</th>
-                <th>Last Ordered</th>
-                <th>Local / Order</th>
+                <th>Item Name</th>
+
+                <th>Cupboard No.</th>
+
+                <th>Shelf No.</th>
 
             </tr>
 
@@ -83,15 +145,50 @@
 
     </table>
 
-    <br><br>
+</div>
 
-    <button id="adminBtn">
-        Admin Login
-    </button>
+<!-- Footer -->
+
+<footer class="footer">
+
+    <p>
+        Lufthansa Storage Locator © 2026
+    </p>
+
+</footer>
+
+<!-- Admin Login Modal -->
+
+<div id="loginModal" class="modal">
+
+    <div class="modalContent">
+
+        <span class="closeModal">&times;</span>
+
+        <h2>Admin Login</h2>
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Username"
+        >
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Password"
+        >
+
+        <button id="loginBtn">
+            Login
+        </button>
+
+    </div>
 
 </div>
 
 <script src="script.js"></script>
 
 </body>
+
 </html>

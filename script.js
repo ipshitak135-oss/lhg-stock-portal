@@ -10,99 +10,104 @@ let inventory = [];
 
 async function loadInventory() {
     try {
-        const response = await fetch(API_URL + "?t=" + Date.now());
-
-        if (!response.ok) {
-            throw new Error("Failed to load inventory");
-        }
-
+        const response = await fetch(API_URL);
         const data = await response.json();
 
-        inventory = data.slice(1);
+        inventory = data.filter(row => row && row.length > 0);
 
         totalItems.textContent = inventory.length;
 
-    } catch (error) {
-        console.error(error);
-        alert("Inventory load failed.");
+    } catch (err) {
+        console.error(err);
     }
 }
 
-function searchInventory() {
-    const keyword = searchBox.value.trim().toLowerCase();
+function showResults(results){
 
-    resultsBody.innerHTML = "";
+    resultsBody.innerHTML="";
 
-    if (keyword === "") {
-        resultCount.textContent = "0";
+    resultCount.textContent=results.length;
+
+    if(results.length===0){
+
+        resultsBody.innerHTML="<tr><td colspan='3'>No Item Found</td></tr>";
+
         return;
+
     }
 
-    const results = inventory.filter(row =>
-        row.join(" ").toLowerCase().includes(keyword)
-    );
+    results.forEach(row=>{
 
-    resultCount.textContent = results.length;
- if (results.length === 0) {
-        resultsBody.innerHTML =
-            "<tr><td colspan='6'>No Item Found</td></tr>";
-        return;
-    }
-
-    results.forEach(row => {
-        resultsBody.innerHTML += `
+        resultsBody.innerHTML+=`
         <tr>
-            <td>${row[0] || ""}</td>
-            <td>${row[1] || ""}</td>
-            <td>${row[2] || ""}</td>
-            <td>${row[3] || ""}</td>
-            <td>${row[4] || ""}</td>
-            <td>${row[5] || ""}</td>
+            <td>${row[0]||""}</td>
+            <td>${row[1]||""}</td>
+            <td>${row[2]||""}</td>
         </tr>
         `;
+
     });
+
 }
 
-function searchCupboard(cupboard) {
-    searchBox.value = cupboard;
-    searchInventory();
+function searchInventory(){
+
+    const keyword=searchBox.value.trim().toLowerCase();
+
+    if(keyword===""){
+
+        showResults([]);
+
+        return;
+
+    }
+
+    const results=inventory.filter(row=>
+        (row[0]||"").toLowerCase().includes(keyword)
+    );
+
+    showResults(results);
+
 }
 
-function createCupboardButtons() {
-    const container = document.getElementById("cupboardContainer");
+function searchCupboard(cupboard){
 
-    if (!container) return;
+    const results=inventory.filter(row=>row[1]===cupboard);
 
-    container.innerHTML = "";
+    showResults(results);
 
-    for (let i = 1; i <= 25; i++) {
-        const btn = document.createElement("button");
-        btn.className = "cupboard-btn";
-        btn.textContent = "Cupboard " + i;
+}
 
-        btn.onclick = function () {
-            searchCupboard("CUPBOARD NO " + i);
-        };
+function createCupboardButtons(){
+
+    const container=document.getElementById("cupboardContainer");
+
+    container.innerHTML="";
+
+    for(let i=1;i<=25;i++){
+
+        const no="C-"+String(i).padStart(2,"0");
+
+        const btn=document.createElement("button");
+
+        btn.className="cupboard-btn";
+
+        btn.textContent=no;
+
+        btn.onclick=()=>searchCupboard(no);
 
         container.appendChild(btn);
+
     }
+
 }
 
-searchBtn.addEventListener("click", searchInventory);
+searchBtn.addEventListener("click",searchInventory);
 
-searchBox.addEventListener("keyup", function (e) {
-    if (e.key === "Enter") {
-        searchInventory();
-    }
+searchBox.addEventListener("keyup",e=>{
+    if(e.key==="Enter") searchInventory();
 });
 
-const adminBtn = document.getElementById("adminBtn");
-
-if (adminBtn) {
-    adminBtn.addEventListener("click", function () {
-        window.location.href = "admin.html";
-    });
-}
-
 loadInventory();
+
 createCupboardButtons();
