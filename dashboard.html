@@ -14,6 +14,7 @@
 </head>
 
 <body>
+ <input type="file" id="excelFile" accept=".xlsx,.xls" style="display:none;">
 
 <div class="dashboard">
 
@@ -285,12 +286,57 @@ alert("Delete Function Next Step");
 
 }
 
-uploadBtn.onclick=function(){
-
-document.getElementById("excelFile").click();
-
+uploadBtn.onclick = function () {
+    document.getElementById("excelFile").click();
 };
 
+document.getElementById("excelFile").addEventListener("change", function (e) {
+
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = async function (evt) {
+
+        const data = new Uint8Array(evt.target.result);
+
+        const workbook = XLSX.read(data, { type: "array" });
+
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        const response = await fetch(API_URL, {
+
+            method: "POST",
+
+            body: JSON.stringify({
+                action: "upload",
+                rows: rows
+            })
+
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+
+            alert("✅ Excel Uploaded Successfully");
+
+            loadInventory();
+
+        } else {
+
+            alert("Upload Failed");
+
+        }
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+});
 exportBtn.onclick=function(){
 
 alert("Export Function Next Step");
