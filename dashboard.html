@@ -258,10 +258,10 @@ saveBtn.onclick = async function () {
 
         }
 
-    } catch (err) {
-
-        console.error(err);
-        alert("Connection Error");
+    }  catch (err) {
+    console.log(err);
+    alert(err.message);
+}
 
     }
 
