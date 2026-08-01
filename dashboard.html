@@ -200,6 +200,43 @@ return;
 
 }
 
+if (editRow !== -1) {
+
+    const response = await fetch(API_URL, {
+
+        method: "POST",
+
+        body: JSON.stringify({
+            action: "edit",
+            row: editRow + 2,
+            item: item.value.trim(),
+            cupboard: cupboard.value.trim(),
+            shelf: shelf.value.trim()
+        })
+
+    });
+
+    const result = await response.json();
+
+    if (result.status === "success") {
+
+        alert("✅ Item Updated Successfully");
+
+        editRow = -1;
+
+        saveBtn.textContent = "💾 Save Item";
+
+        item.value = "";
+        cupboard.value = "";
+        shelf.value = "";
+
+        await loadInventory();
+
+    }
+
+    return;
+
+}
 const body={
 
 action:"add",
@@ -266,13 +303,17 @@ renderTable(filtered);
 
 };
 
-function editItem(i){
+let editRow = -1;
 
-item.value=inventory[i][0];
+function editItem(i) {
 
-cupboard.value=inventory[i][1];
+    editRow = i;
 
-shelf.value=inventory[i][2];
+    item.value = inventory[i][0];
+    cupboard.value = inventory[i][1];
+    shelf.value = inventory[i][2];
+
+    saveBtn.textContent = "💾 Update Item";
 
 }
 function deleteItem(i){
