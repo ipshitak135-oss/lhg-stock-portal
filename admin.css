@@ -288,3 +288,104 @@ overflow-x:auto;
 }
 
 }
+/* ---------- Mobile Responsive ---------- */
+
+@media screen and (max-width:768px){
+
+.dashboard{
+
+width:95%;
+
+padding:20px;
+
+margin:20px auto;
+
+}
+
+.dashboard h1{
+
+font-size:30px;
+
+text-align:center;
+
+}
+
+.dashboard p{
+
+text-align:center;
+
+}
+
+.action-bar{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:10px;
+
+}
+
+.action-bar button{
+
+width:100%;
+
+font-size:14px;
+
+padding:12px;
+
+}
+
+.add-form{
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.add-form input{
+
+width:100%;
+
+}
+
+#saveItem{
+
+width:100%;
+
+margin-top:10px;
+
+}
+
+.search-section{
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.search-section input{
+
+width:100%;
+
+}
+
+.search-section button{
+
+width:100%;
+
+}
+
+#adminTable{
+
+display:block;
+
+overflow-x:auto;
+
+white-space:nowrap;
+
+}
+
+}
