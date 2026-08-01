@@ -6,6 +6,12 @@ const error = document.getElementById("error");
 
 loginBtn.addEventListener("click", login);
 
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        login();
+    }
+});
+
 function login() {
 
     const username = document.getElementById("username").value.trim();
@@ -19,7 +25,7 @@ function login() {
 
     } else {
 
-        error.textContent = "Invalid Username or Password";
+        error.textContent = "❌ Invalid Username or Password";
 
     }
 

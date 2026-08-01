@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>LHG Admin Dashboard</title>
+<title>LHG Storage Admin</title>
 
 <link rel="stylesheet" href="admin.css">
 
@@ -14,21 +14,129 @@
 
 <body>
 
-<div class="login-box">
+<div class="dashboard">
 
-<h1>LHG Admin Dashboard</h1>
+<h1>LHG Storage Admin</h1>
 
-<p>Inventory Management</p>
+<p>Manage Storage Inventory</p>
 
-<button id="openSheet">
-📊 Open Master Inventory
+<div class="action-bar">
+
+<button id="addItemBtn">
+➕ Add Item
 </button>
 
-<br><br>
+<button id="uploadExcelBtn">
+📤 Upload Excel
+</button>
+
+<button id="exportExcelBtn">
+📥 Export Excel
+</button>
 
 <button id="logout">
 🚪 Logout
 </button>
+
+</div>
+
+<div class="add-form">
+
+<input
+type="text"
+id="itemName"
+placeholder="Item Name"
+>
+
+<input
+type="text"
+id="cupboardNo"
+placeholder="Cupboard No"
+>
+
+<input
+type="text"
+id="shelfNo"
+placeholder="Shelf No"
+>
+
+<button id="saveItem">
+💾 Save Item
+</button>
+
+</div>
+
+<h2>Inventory List</h2>
+<div class="search-section">
+
+<input
+type="text"
+id="adminSearch"
+placeholder="Search Item..."
+>
+
+<button id="searchItem">
+🔍 Search
+</button>
+
+</div>
+
+<table id="adminTable">
+
+<thead>
+
+<tr>
+
+<th>Item Name</th>
+
+<th>Cupboard</th>
+
+<th>Shelf</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="adminTableBody">
+
+<tr>
+
+<td>Mouse</td>
+
+<td>C-01</td>
+
+<td>S-2</td>
+
+<td>
+
+<button class="editBtn">
+
+✏ Edit
+
+</button>
+
+<button class="deleteBtn">
+
+🗑 Delete
+
+</button>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<input
+type="file"
+id="excelFile"
+accept=".xlsx"
+hidden
+>
 
 </div>
 
@@ -38,21 +146,177 @@ if(sessionStorage.getItem("lhgAdmin")!=="true"){
     window.location.href="admin.html";
 }
 
+const API_URL="YOUR_GOOGLE_APPS_SCRIPT_URL";
+
+const saveBtn=document.getElementById("saveItem");
+const searchBtn=document.getElementById("searchItem");
+const uploadBtn=document.getElementById("uploadExcelBtn");
+const exportBtn=document.getElementById("exportExcelBtn");
+
+const item=document.getElementById("itemName");
+const cupboard=document.getElementById("cupboardNo");
+const shelf=document.getElementById("shelfNo");
+
+const table=document.getElementById("adminTableBody");
+
+let inventory=[];
+
+async function loadInventory(){
+
+    const res=await fetch(API_URL);
+
+    inventory=await res.json();
+
+    renderTable(inventory);
+
+}
+
+function renderTable(data){
+
+    table.innerHTML="";
+
+    data.forEach((row,index)=>{
+
+        table.innerHTML+=`
+
+        <tr>
+
+        <td>${row[0]}</td>
+
+        <td>${row[1]}</td>
+
+        <td>${row[2]}</td>
+
+        <td>
+
+        <button class="editBtn" onclick="editItem(${index})">
+
+        ✏
+
+        </button>
+
+        <button class="deleteBtn" onclick="deleteItem(${index})">
+
+        🗑
+
+        </button>
+
+        </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+saveBtn.onclick = async function () {
+
+    if (
+        item.value.trim() === "" ||
+        cupboard.value.trim() === "" ||
+        shelf.value.trim() === ""
+    ) {
+        alert("Please fill all fields.");
+        return;
+    }
+
+    const body = {
+        action: "add",
+        item: item.value.trim(),
+        cupboard: cupboard.value.trim(),
+        shelf: shelf.value.trim()
+    };
+
+    try {
+
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+
+            alert("✅ Item Added Successfully");
+
+            item.value = "";
+            cupboard.value = "";
+            shelf.value = "";
+
+            loadInventory();
+
+        } else {
+
+            alert("Failed to save item.");
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        alert("Connection Error");
+
+    }
+
+};
+
+searchBtn.onclick=function(){
+
+    const key=document.getElementById("adminSearch").value.toLowerCase();
+
+    const filtered=inventory.filter(x=>x[0].toLowerCase().includes(key));
+
+    renderTable(filtered);
+
+}
+
+function editItem(i){
+
+    item.value=inventory[i][0];
+
+    cupboard.value=inventory[i][1];
+
+    shelf.value=inventory[i][2];
+
+}
+
+function deleteItem(i){
+
+    alert("Delete Function Next Step");
+
+}
+
+uploadBtn.onclick=function(){
+
+    document.getElementById("excelFile").click();
+
+}
+
+exportBtn.onclick=function(){
+
+    alert("Export Function Next Step");
+
+}
+
 document.getElementById("logout").onclick=function(){
 
-    sessionStorage.removeItem("lhgAdmin");
+sessionStorage.removeItem("lhgAdmin");
 
-    window.location.href="index.html";
+window.location.href="index.html";
 
-};
+}
 
-document.getElementById("openSheet").onclick=function(){
+loadInventory();
 
-    alert("Google Sheet Link yahan add karenge.");
-
-};
 
 </script>
 
 </body>
+
 </html>

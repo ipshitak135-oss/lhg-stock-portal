@@ -14,6 +14,7 @@ async function loadInventory() {
         const data = await response.json();
 
         inventory = data.filter(row => row && row.length > 0);
+        createCupboardButtons();
 
         totalItems.textContent = inventory.length;
 
@@ -72,42 +73,90 @@ function searchInventory(){
 
 function searchCupboard(cupboard){
 
-    const results=inventory.filter(row=>row[1]===cupboard);
+    const results = inventory.filter(row => row[1] === cupboard);
 
-    showResults(results);
+    resultsBody.innerHTML = "";
+
+    if(results.length===0){
+
+        resultsBody.innerHTML="<tr><td colspan='3'>No Item Found</td></tr>";
+
+        return;
+
+    }
+
+    const shelves=[...new Set(results.map(r=>r[2]))].sort();
+
+    shelves.forEach(shelf=>{
+
+        resultsBody.innerHTML+=`
+
+        <tr>
+
+            <td colspan="3"
+
+            style="background:#003b7a;color:#fff;font-weight:bold;">
+
+            📚 ${shelf}
+
+            </td>
+
+        </tr>
+
+        `;
+
+        results
+        .filter(r=>r[2]===shelf)
+        .forEach(item=>{
+
+            resultsBody.innerHTML+=`
+
+            <tr>
+
+            <td>${item[0]}</td>
+
+            <td>${item[1]}</td>
+
+            <td>${item[2]}</td>
+
+            </tr>
+
+            `;
+
+        });
+
+    });
 
 }
 
 function createCupboardButtons(){
 
-    const container=document.getElementById("cupboardContainer");
+    const container = document.getElementById("cupboardContainer");
 
-    container.innerHTML="";
+    container.innerHTML = "";
 
-    for(let i=1;i<=25;i++){
+    // Unique cupboards nikaalo
+    const cupboards = [...new Set(inventory.map(row => row[1]))]
+        .filter(Boolean)
+        .sort();
 
-        const no="C-"+String(i).padStart(2,"0");
+    cupboards.forEach(cupboard => {
 
-        const btn=document.createElement("button");
+        const count = inventory.filter(row => row[1] === cupboard).length;
 
-        btn.className="cupboard-btn";
+        const card = document.createElement("div");
 
-        btn.textContent=no;
+        card.className = "cupboard-card";
 
-        btn.onclick=()=>searchCupboard(no);
+        card.innerHTML = `
+            <h3>${cupboard}</h3>
+            <p>${count} Items</p>
+        `;
 
-        container.appendChild(btn);
+        card.onclick = () => searchCupboard(cupboard);
 
-    }
+        container.appendChild(card);
+
+    });
 
 }
-
-searchBtn.addEventListener("click",searchInventory);
-
-searchBox.addEventListener("keyup",e=>{
-    if(e.key==="Enter") searchInventory();
-});
-
-loadInventory();
-
-createCupboardButtons();
